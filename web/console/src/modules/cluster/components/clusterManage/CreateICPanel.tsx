@@ -115,7 +115,7 @@ export class CreateICPanel extends React.Component<RootProps, State> {
       computerList.forEach(c => {
         nodeNum += c.ipList.split(';').length;
       });
-      canSave = canSave && v_vipAddress.status === 1 && v_vipPort.status !== 2 && nodeNum > 1;
+      canSave = canSave && v_vipAddress.status === 1 && v_vipPort.status !== 2;
       showExistVipUnuseTip = nodeNum > 1 ? false : true;
     } else if (vipType === CreateICVipType.tke) {
       canSave = canSave && v_vipAddress.status === 1;
@@ -206,7 +206,7 @@ export class CreateICPanel extends React.Component<RootProps, State> {
                 ) : (
                   <Trans>
                     <p>
-                      在用户自定义VIP情况下，VIP后端需要绑定80（tke控制台）、443（tke控制台）、6443（kube-apiserver端口）端口，同时请确保该VIP有至少两个LB后端（master),
+                      在用户自定义VIP情况下，VIP后端需要绑定6443（kube-apiserver端口）端口，同时请确保该VIP有至少两个LB后端（master),
                     </p>
                     <p>由于LB自身路由问题，单LB后端情况下存在集群不可用风险。</p>
                   </Trans>
@@ -271,7 +271,19 @@ export class CreateICPanel extends React.Component<RootProps, State> {
               }
             />
 
-            <FormPanel.Item>
+            <FormPanel.Item
+              message={
+                showExistVipUnuseTip ? (
+                  <FormPanel.HelpText theme="danger">
+                    {t(
+                      '在用户自定义VIP情况下，请确保该VIP有至少两个LB后端（master节点），单LB后端情况下存在集群不可用风险，请增加master节点或修改【高可用类型】'
+                    )}
+                  </FormPanel.HelpText>
+                ) : (
+                  ''
+                )
+              }
+            >
               {computerList.map((item, index) => {
                 return item.isEditing ? (
                   <SelectICComputerPanel
@@ -349,12 +361,8 @@ export class CreateICPanel extends React.Component<RootProps, State> {
                   {getWorkflowError(workflow)}
                 </TipInfo>
 
-                <TipInfo type="error" isForm isShow={(!canSave && hasEditing) || showExistVipUnuseTip}>
-                  {showExistVipUnuseTip
-                    ? t(
-                        '在用户自定义VIP情况下，请确保该VIP有至少两个LB后端（master节点），单LB后端情况下存在集群不可用风险，请增加master节点或修改【高可用类型】'
-                      )
-                    : t('请先完成待编辑项')}
+                <TipInfo type="error" isForm isShow={!canSave && hasEditing}>
+                  {t('请先完成待编辑项')}
                 </TipInfo>
               </React.Fragment>
             </FormPanel.Footer>
