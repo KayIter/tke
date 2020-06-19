@@ -772,3 +772,19 @@ export const DropCapabilitiesList = [
   'SETFCAP',
   'all'
 ];
+
+/** pod远程登录的选项 */
+export const podRemoteShellOptions = [
+  {
+    value: '/bin/bash',
+    text: '/bin/bash'
+  },
+  {
+    value: '/bin/zsh',
+    text: '/bin/zsh'
+  },
+  {
+    value: '/bin/sh',
+    text: '/bin/sh'
+  }
+];
